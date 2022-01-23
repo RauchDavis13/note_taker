@@ -1,23 +1,36 @@
 const router = require('express').Router();
-const { getAllNotes, createNewNote, validateNote } = require('../db/index.js');
+const store = require('../db/store');
 
 router.get('/notes', (req, res) => {
-  getAllNotes().then(
-    notes => {
-      console.log(notes);
-      return res.json(notes);
-    }
-  )
-    .catch(err => res.status(500).json(err))
+  store
+    .getAllNotes()
+    .then(
+      (notes) => {
+        console.log(notes);
+        return res.json(notes);
+      }
+    )
+    .catch((err) => res.status(500).json(err))
 });
 
 router.post('/notes', (req, res) => {
-  // set id based on what the next index of the array will be
+store
 
-  createNewNote(req.body)
-    .then(note => res.json(note))
-    .catch(err => res.status(500).json(err))
+  .createNewNote(req.body)
+    .then((note) => res.json(note))
+    .catch((err) => res.status(500).json(err));
 
 });
+
+router.delete('/notes/:id', (req, res) => {
+  const note = notes.find(n => n.id == req.params.id);
+  if (!note) return res.status(404).send('The note with the given ID is not found')
+
+  const index = notes.indexOf(note);
+  notes.splice(index, 1);
+  updateDb(notes)
+
+  res.send(note);
+})
 
 module.exports = router;
